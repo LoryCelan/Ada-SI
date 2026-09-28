@@ -130,10 +130,16 @@ def rewrite_workspace_paths(text: str, workspace_dir: Path) -> str:
 
 
 def _venv_python(venv_dir: Path) -> Path:
-    py = venv_dir / "Scripts" / "python.exe"
+    if sys.platform.startswith("win"):
+        py = venv_dir / "Scripts" / "python.exe"
+        if py.exists():
+            return py
+    py = venv_dir / "bin" / "python"
     if py.exists():
         return py
-    return venv_dir / "bin" / "python"
+    if sys.platform.startswith("win"):
+        return venv_dir / "Scripts" / "python.exe"
+    return py
 
 
 def _venv_site_packages(venv_dir: Path) -> Path | None:

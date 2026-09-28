@@ -27,10 +27,16 @@ def sanitize_python_json_literals(code: str) -> str:
 
 
 def venv_python() -> Path:
-    py = VENV_PATH / "bin" / "python"
-    if not py.exists():
+    if sys.platform.startswith("win"):
         py = VENV_PATH / "Scripts" / "python.exe"
-    return py
+        if py.exists():
+            return py
+    py = VENV_PATH / "bin" / "python"
+    if py.exists():
+        return py
+    if sys.platform.startswith("win"):
+        return VENV_PATH / "Scripts" / "python.exe"
+    return VENV_PATH / "bin" / "python"
 
 
 def ensure_venv() -> None:
